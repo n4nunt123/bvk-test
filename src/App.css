@@ -1,0 +1,10 @@
+div.container-components {
+  display: grid;
+  grid-template-columns: auto auto auto;
+}
+
+.card-img-top{
+  width: auto;
+  height: 300px;
+  object-fit: contain;
+}
