@@ -3,9 +3,9 @@ import useFetch from "../hooks/useFetch"
 import CardComponent from "../components/CardComponent"
 
 function Main() {
-  const [url, setUrl] = useState('https://api.thecatapi.com/v1/breeds')
+  const [query, setQuery] = useState('')
   const [page, setPage] = useState(0)
-  const [cats, moreCats, err, loading] = useFetch(url, page)
+  const [cats, moreCats, err, loading] = useFetch(query, page)
 
   const observer = useRef()
   const lastCatRef = useCallback(catElementRef => {
@@ -18,10 +18,17 @@ function Main() {
     })
     if(catElementRef) observer.current.observe(catElementRef)
   }, [loading, moreCats])
-  
+
+  const search = (e) => {
+    setQuery(e.target.value)
+    setPage(0)
+  }
+
   return (
+    <>
+    <input type="text" onChange={search}></input>
     <div className="container-components">
-      {cats.map((cat, index) => {
+      {!loading && cats.map((cat, index) => {
         if(cats.length === index + 1) {
           return (
           <div ref={lastCatRef} key={cat.id}>
@@ -41,8 +48,9 @@ function Main() {
         }
       })}
       <div>{loading && 'Loading...'}</div>
-      <div>{err && 'Internal Server Error'}</div>
+      <div>{err && 'ERROR 404: CATS NOT FOUND'}</div>
     </div>
+    </>
   )
 }
 

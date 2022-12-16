@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios, { all } from 'axios'
 
-function useFetch(url, page) {
+function useFetch(query, page) {
   const [cats, setCats] = useState([])
   const [err, setErr] = useState('')
   const [loading, setLoading] = useState(false)
@@ -9,28 +9,40 @@ function useFetch(url, page) {
 
   useEffect(() => {
     fetchData()
-  }, [url, page])
-
+  }, [query, page])
+  
   const fetchData = async () => {
     setLoading(true)
     setErr(false)
     try {
-      const { data } = await axios({
-        method: 'GET',
-        url: url,
-        params: { limit: 10, page:page }
-      })
-      if(data.length) {
-        setMoreCats(true)
-        setCats(prevCats => {
-          if(!page == 0) {
-            return [...new Set([...prevCats, ...data])]
-          } else {
-            return data
-          }
+      if(!query) {
+        const { data } = await axios({
+          method: 'GET',
+          url: 'https://api.thecatapi.com/v1/breeds',
+          params: { limit: 10, page:page }
         })
+        if(data.length) {
+          setMoreCats(true)
+          setCats(prevCats => {
+            if(!page == 0) {
+              return [...new Set([...prevCats, ...data])]
+            } else {
+              return data
+            }
+          })
+        } else {
+          setMoreCats(false)
+        }
       } else {
-        setMoreCats(false)
+        const { data } = await axios({
+          method: 'GET',
+          url: 'https://api.thecatapi.com/v1/breeds/search',
+          params: { q: query, limit: 10, page: page }
+        })
+        setCats(data)
+        if(!data.length) {
+          throw null
+        }
       }
     } catch (err) {
       setErr(true)
