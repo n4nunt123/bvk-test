@@ -1,23 +1,37 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import React from 'react'
+import axios from 'axios'
 
 
 import chart from './Graph'
 import { Radar } from 'react-chartjs-2';
 
 export default function CardComponent(props) {
-  const [visible, setvisible] = useState(false)
+  const [visible, setVisible] = useState(false)
+  const [image, setImage] = useState('')
 
   const click = () => {
-    if(visible) setvisible(false)
-    else setvisible(true)
+    if(visible) setVisible(false)
+    else setVisible(true)
   }
+
+  const getImage = async (image) => {
+    const { data } = await axios({
+      url: `https://api.thecatapi.com/v1/images/${image}`,
+      method: 'GET'
+    })
+    setImage(data.url)
+  }
+
+  useEffect(() => {
+    getImage(props.data.reference_image_id)
+  }, [image])
   
   return (
     <>
       <div className="card-container">
         <div className="card" style={{width: "25rem", margin: 15}}>
-          {props.data.image ? <img src={props.data.image.url} className="card-img-top" alt={props.data.name} /> : <img src={'https://cdn.discordapp.com/attachments/1043787906436841502/1053190363399061525/640px-Image_not_available.png'} className="card-img-top" alt={props.data.name} />}
+          {image ? <img src={image} className="card-img-top" alt={props.data.name} /> : <img src={'https://cdn.discordapp.com/attachments/1043787906436841502/1053190363399061525/640px-Image_not_available.png'} className="card-img-top" alt={props.data.name} />}
           <div className="card-body">
             <h5 className="card-title">{props.data.name}</h5>
             <p className="card-text">{props.data.description}</p>

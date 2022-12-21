@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react"
+import { useState, useRef, useCallback } from "react"
 import useFetch from "../hooks/useFetch"
 import CardComponent from "../components/CardComponent"
 
@@ -21,14 +21,14 @@ function Main() {
 
   const search = (e) => {
     setQuery(e.target.value)
-    setPage(0)
+    setPage(1)
   }
 
   return (
     <>
     <input type="text" onChange={search}></input>
     <div className="container-components">
-      {!loading && cats.map((cat, index) => {
+      {cats.map((cat, index) => {
         if(cats.length === index + 1) {
           return (
           <div ref={lastCatRef} key={cat.id}>

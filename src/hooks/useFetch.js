@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios, { all } from 'axios'
+import axios from 'axios'
 
 function useFetch(query, page) {
   const [cats, setCats] = useState([])
@@ -43,6 +43,7 @@ function useFetch(query, page) {
         if(!data.length) {
           throw null
         }
+        setMoreCats(false)
       }
     } catch (err) {
       setErr(true)
